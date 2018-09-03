@@ -109,13 +109,6 @@ ${acceleration}=  720
     Input Text  xpath=//*[@id="deliveryaddress-${item}-postalcode"]  ${item_data.deliveryAddress.postalCode}
 
 
-Додати предмет закупівлі
-    [Arguments]  ${tender_owner}  ${tender_uaid}  ${item}
-    setam.Пошук Тендера По Ідентифікатору  ${tender_owner}  ${tender_uaid}
-    Wait For Document Upload
-    Run Keyword And Ignore Error  Click Element  xpath=//button[@id="add-item"]
-
-
 Видалити предмет закупівлі
     [Arguments]  ${tender_owner}  ${tender_uaid}  ${item_id}
     setam.Пошук Тендера По Ідентифікатору  ${tender_owner}  ${tender_uaid}
