@@ -7,7 +7,7 @@ Library  DateTime
 Library  setam_service.py
 
 *** Variables ***
-${acceleration}=  720
+${acceleration}=  144
 
 *** Keywords ***
 
@@ -73,7 +73,7 @@ ${acceleration}=  720
     :FOR  ${item}  IN RANGE  ${items_length}
     \  Log  ${items[${item}]}
     \  Run Keyword If  ${item} > 0  Scroll To And Click Element  xpath=//button[@id="add-item"]
-    \  setam.Додати Предмет Закупівлі  ${item}  ${items[${item}]}
+    \  setam.Додати Предмет   ${item}  ${items[${item}]}
     ${auction_date}=  convert_date_for_auction  ${data.auctionPeriod.startDate}
     Input Text  //*[@id="auction-start-date"]  ${auction_date}
     Input Text  //*[@id="contactpoint-name"]  ${data.procuringEntity.contactPoint.name}
@@ -86,7 +86,7 @@ ${acceleration}=  720
     [Return]  ${auction_id}
 
 
-Додати Предмет Закупівлі
+Додати Предмет
     [Arguments]  ${item}  ${item_data}
     Input Text  xpath=//*[@id="item-${item}-description"]  ${item_data.description}
     Convert Input Data To String  xpath=//*[@id="item-${item}-quantity"]  ${item_data.quantity}
@@ -107,6 +107,25 @@ ${acceleration}=  720
     Input Text  xpath=//*[@id="deliveryaddress-${item}-locality"]  ${item_data.deliveryAddress.locality}
     Input Text  xpath=//*[@id="deliveryaddress-${item}-streetaddress"]  ${item_data.deliveryAddress.streetAddress}
     Input Text  xpath=//*[@id="deliveryaddress-${item}-postalcode"]  ${item_data.deliveryAddress.postalCode}
+
+
+Додати предмет закупівлі
+    [Arguments]  ${tender_owner}  ${tender_uaid}  ${item_data}
+    setam.Пошук Тендера По Ідентифікатору  ${tender_owner}  ${tender_uaid}
+    Wait For Document Upload
+    Scroll To And Click Element  xpath=//button[@id="add-item"]
+    ${item_number}=  Get Element Attribute  xpath=(//input[contains(@class, "item-id")])[last()]@id
+    ${item_number}=  Set Variable  ${item_number.split('-')[-2]}
+    setam.Додати Предмет  ${item_number}  ${item_data}
+    Scroll To  xpath=//*[@action="/tender/fileupload"]/input
+    ${file}=  my_file_path
+    Choose File  xpath=(//*[@action="/tender/fileupload"]/input)[last()]  ${file}
+    Wait Until Element Is Visible  xpath=(//*[@class="document-title"])[last()]
+    Input Text  xpath=(//*[@class="document-title"])[last()]  Погодження змін до опису лоту
+    Select From List By Value  xpath=(//*[@class="document-type"])[last()]  clarifications
+    Select From List By Value  xpath=(//*[@class="document-related-item"])[last()]  tender
+    Click Element  //*[@name="simple_submit"]
+    Wait Until Element Is Visible  xpath=//div[@data-test-id="tenderID"]  20
 
 
 Видалити предмет закупівлі
@@ -428,7 +447,7 @@ Proposition
 
 Отримати кількість предметів в тендері
     [Arguments]  ${username}  ${tender_uaid}
-    ${items}=  Get Matching Xpath Count  xpath=//div[@data-test-id="item-description"]
+    ${items}=  Get Matching Xpath Count  xpath=//div[@data-test-id="item.description"]
     ${n_items}=  Convert To Integer  ${items}
     [Return]  ${n_items}
 
