@@ -7,7 +7,7 @@ Library  DateTime
 Library  setam_service.py
 
 *** Variables ***
-${acceleration}=  144
+${acceleration}=  70
 
 *** Keywords ***
 
