@@ -126,6 +126,9 @@ ${acceleration}=  144
     Select From List By Value  xpath=(//*[@class="document-related-item"])[last()]  tender
     Click Element  //*[@name="simple_submit"]
     Wait Until Element Is Visible  xpath=//div[@data-test-id="tenderID"]  20
+    Wait Until Keyword Succeeds  30 x  20 s  Run Keywords
+    ...  Reload Page
+    ...  AND  Wait Until Page Does Not Contain   Документ завантажується...  10
 
 
 Видалити предмет закупівлі
@@ -384,7 +387,7 @@ Proposition
     Wait Until Keyword Succeeds  10 x  1 s  Wait Until Element Is Visible  xpath=//div[@class="search-result"]/descendant::div[contains(text(), "${tender_uaid}")]
     Wait Until Keyword Succeeds  20 x  1 s  Run Keywords
     ...  Click Element  xpath=//div[@class="search-result"]/descendant::div[contains(text(), "${tender_uaid}")]/../following-sibling::div/a
-    ...  AND  Wait Until Element Is Not Visible  xpath=//button[contains(text(), "Шукати")]  5
+    ...  AND  Wait Until Element Is Not Visible  xpath=//button[contains(text(), "Шукати")]  15
     Закрити Модалку
     Wait Until Element Is Visible  xpath=//div[@data-test-id="tenderID"]  20
 
